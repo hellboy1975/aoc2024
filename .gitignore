@@ -20,7 +20,7 @@
 # Go workspace file
 go.work
 
-# ignore any aoc2023 data copied to this directory
+# ignore any aoc2024 data copied to this directory
 data/
 
 # ignore binaries

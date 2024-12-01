@@ -10,14 +10,27 @@ import (
 	"strings"
 )
 
-const testDataFile = "data/day_%d_%d.txt"
+const fullDataFile = "data/day_%d_%d.txt"
+const testDataFile = "data/day_%d_%d_test.txt"
 
 // gets the data file for the requested day and part
-func GetDayDataFile(day, part int) string {
-	file := fmt.Sprintf(testDataFile, day, part)
+func GetDayDataFile(day, part int, test bool) string {
+	//TODO: make the test parameter come in via the CLI
+	fn := fullDataFile
+	if test {
+		fn = testDataFile
+	}
+	file := fmt.Sprintf(fn, day, part)
 	fmt.Println("  Data file: " + file)
 
 	return file
+}
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
 
 // Read a whole file into the memory and store it as array of lines
@@ -65,8 +78,8 @@ func RemoveDuplicateInt(intSlice []int) []int {
 
 // takes a string of space separated numbers, and converts this to an array of ints
 func StringToIntArray(nums string) (arr []int) {
-	nums = strings.TrimSpace(nums)             // remove trailing and leading whitespace
-	nums = strings.ReplaceAll(nums, "  ", " ") // remove double spaces
+	nums = strings.TrimSpace(nums)              // remove trailing and leading whitespace
+	nums = strings.ReplaceAll(nums, "   ", " ") // remove triple spaces
 	for _, num := range strings.Split(nums, " ") {
 		n, _ := strconv.Atoi(num)
 		arr = append(arr, n)

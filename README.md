@@ -7,13 +7,15 @@ My approach for this year:
 * Continue to improve my Golang craft
 * Use TDD - possibly less of a focus on this - we'll see!
 
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/hellboy1975/aoc2023/.github%2Fworkflows%2Fgo.yml)
-![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/hellboy1975/aoc2023)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/hellboy1975/aoc2024/.github%2Fworkflows%2Fgo.yml)
+![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/hellboy1975/aoc2024)
 
 
 ## Usage
 
-Clone this repo to your file system directory of choice, and make sure you have Go 1.21.4 installed
+Clone this repo to your file system directory of choice.  Best to have a version of Go that is at least 1.22
+
+To add data, create a folder called `data` and then the respective day files are `day_<day>_<part>.txt`.  ie. `day_1_2.txt` for day 1 part 2.
 
 Build the project with:
 
