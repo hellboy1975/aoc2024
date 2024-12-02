@@ -32,3 +32,4 @@ play/
 # vscode debug file
 launch.json
 .vscode/settings.json
+.idea
