@@ -13,17 +13,37 @@ import (
 const fullDataFile = "data/day_%d_%d.txt"
 const testDataFile = "data/day_%d_%d_test.txt"
 
+var UseTestData bool = false
+var UseVisualisation bool = false
+
+func SetTestData(x bool) {
+	UseTestData = x
+}
+
+func SetVisualisation(x bool) {
+	UseVisualisation = x
+}
+
 // gets the data file for the requested day and part
-func GetDayDataFile(day, part int, test bool) string {
-	//TODO: make the test parameter come in via the CLI
+func GetDayDataFile(day, part int) string {
 	fn := fullDataFile
-	if test {
+	if UseTestData {
 		fn = testDataFile
 	}
 	file := fmt.Sprintf(fn, day, part)
 	fmt.Println("  Data file: " + file)
 
 	return file
+}
+
+func CountInArray(needle int, haystack []int) int {
+	var count int
+	for _, row := range haystack {
+		if row == needle {
+			count++
+		}
+	}
+	return count
 }
 
 func Abs(x int) int {

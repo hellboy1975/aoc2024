@@ -15,12 +15,12 @@ My approach for this year:
 
 Clone this repo to your file system directory of choice.  Best to have a version of Go that is at least 1.22
 
-To add data, create a folder called `data` and then the respective day files are `day_<day>_<part>.txt`.  ie. `day_1_2.txt` for day 1 part 2.
+To add data, create a folder called `data` and then the respective day files are `day_<day>_<part>.txt`.  ie. `day_1_2.txt` for day 1 part 2.  Test data can be run by passing the flag --test and having a `day_<day>_<part>_test.txt` file in the `data` directory
 
 Build the project with:
 
 ```
-go build -o ./bin
+go build -o ./bin/
 ```
 
 Run a specific day with a command like:
@@ -28,6 +28,8 @@ Run a specific day with a command like:
 ```
 ./bin/aoc2024 -day=1 -part=1
 ```
+
+You
 
 For limited help:
 
@@ -61,3 +63,4 @@ Below is a list of sites/resources that have been useful in these challenges:
 * https://regex101.com/
 * https://gobyexample.com
 * https://quii.gitbook.io/learn-go-with-tests/
+* https://pterm.sh/
