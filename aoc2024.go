@@ -1,14 +1,14 @@
 package main
 
 import (
-	// "aoc2024/src/day1"
-	// "aoc2024/src/day2"
-	// "aoc2024/src/day3"
-	// "aoc2024/src/day4"
 	"flag"
 	"fmt"
 	"hellboy1975/aoc2024/src/base"
 	"hellboy1975/aoc2024/src/day1"
+	"hellboy1975/aoc2024/src/day2"
+
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
 func main() {
@@ -17,7 +17,10 @@ func main() {
 	testPtr := flag.Bool("test", false, "use the test data instead of the actual data")
 	visualisePtr := flag.Bool("visualise", false, "show any visualisations for the solution")
 
-	fmt.Println("Advent of Code 2024!")
+	pterm.DefaultBigText.WithLetters(
+		putils.LettersFromStringWithStyle("AOC", pterm.FgCyan.ToStyle()),
+		putils.LettersFromStringWithStyle("2024", pterm.FgLightMagenta.ToStyle())).
+		Render() // Render the big text to the terminal
 
 	flag.Parse()
 
@@ -38,24 +41,11 @@ func main() {
 		} else {
 			day1.Part2()
 		}
+	} else if *dayPtr == 2 {
+		if *partPtr == 1 {
+			day2.Part1()
+		} else {
+			day2.Part2()
+		}
 	}
-	// else if *dayPtr == 2 {
-	// 	if *partPtr == 1 {
-	// 		day2.Part1()
-	// 	} else {
-	// 		day2.Part2()
-	// 	}
-	// } else if *dayPtr == 3 {
-	// 	if *partPtr == 1 {
-	// 		day3.Part1()
-	// 	} else {
-	// 		day3.Part2()
-	// 	}
-	// } else if *dayPtr == 4 {
-	// 	if *partPtr == 1 {
-	// 		day4.Part1()
-	// 	} else {
-	// 		day4.Part2()
-	// 	}
-	// }
 }

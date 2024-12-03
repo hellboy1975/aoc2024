@@ -10,8 +10,8 @@ import (
 	"strings"
 )
 
-const fullDataFile = "data/day_%d_%d.txt"
-const testDataFile = "data/day_%d_%d_test.txt"
+const fullDataFile = "data/day_%d.txt"
+const testDataFile = "data/day_%d_test.txt"
 
 var UseTestData bool = false
 var UseVisualisation bool = false
@@ -25,12 +25,12 @@ func SetVisualisation(x bool) {
 }
 
 // gets the data file for the requested day and part
-func GetDayDataFile(day, part int) string {
+func GetDayDataFile(day int) string {
 	fn := fullDataFile
 	if UseTestData {
 		fn = testDataFile
 	}
-	file := fmt.Sprintf(fn, day, part)
+	file := fmt.Sprintf(fn, day)
 	fmt.Println("  Data file: " + file)
 
 	return file

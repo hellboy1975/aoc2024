@@ -1,6 +1,6 @@
 # Advent of Code 2024
 
-A bunch of code I've create to compete in the 2024 Advent of Code challenge.
+A bunch of code I've create to compete in the [2024 Advent of Code](https://adventofcode.com/2024/) challenge.
 
 My approach for this year:
 

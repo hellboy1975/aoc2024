@@ -11,7 +11,7 @@ import (
 func Part1() {
 	fmt.Println("Day 1, Part 1: Historian Hysteria")
 
-	file := base.GetDayDataFile(1, 1)
+	file := base.GetDayDataFile(1)
 	multi := pterm.DefaultMultiPrinter
 	var left, right []int
 	var count, sum, total int
@@ -54,7 +54,7 @@ func Part1() {
 func Part2() {
 	fmt.Println("Day 1, Part 2: Historian Hysteria")
 
-	file := base.GetDayDataFile(1, 1)
+	file := base.GetDayDataFile(1)
 	var left, right []int
 	var count, total int
 
