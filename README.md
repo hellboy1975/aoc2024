@@ -64,3 +64,23 @@ Below is a list of sites/resources that have been useful in these challenges:
 * https://gobyexample.com
 * https://quii.gitbook.io/learn-go-with-tests/
 * https://pterm.sh/
+
+## Other Stuff
+
+For debugging in VSCode you can use a launch.json config such as:
+
+```
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}",
+            "args": ["--day", "2", "--part", "1", "--test"]
+        }
+    ]
+}
+```

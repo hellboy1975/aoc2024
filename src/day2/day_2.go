@@ -28,13 +28,44 @@ const title = "Red-Nosed Reports"
 // }
 
 func isReportSafe(report []int) bool {
-	var count int
 	pterm.DefaultBasicText.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)))
+	var direction string
+	prev := 0
 
-	for _, level := range report {
-		count += level
+	for _, current := range report {
+		if prev == 0 {
+			// this is the first record - all we can do is record the value
+			prev = current
+		} else {
+			// subtract current from prev to work out the diff
+			diff := prev - current
+
+			// if the diff is 0, or greater than +-3 then bomb out
+			if diff == 0 || diff > 3 || diff < -3 {
+				return false
+			}
+
+			// if direction hasn't been set
+			if direction == "" {
+				if diff > 0 {
+					direction = "+"
+				} else {
+					direction = "-"
+				}
+			} else {
+				// else if it has been set, if the diff is opposite, reject the record
+				if (direction == "+" && diff < 0) || (direction == "-" && diff > 0) {
+					return false
+				}
+			}
+
+			prev = current
+		}
+
 	}
-	return false
+
+	// if the for loops gets all the way through, the report is safe
+	return true
 }
 
 func Part1() {
