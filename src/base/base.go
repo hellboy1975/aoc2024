@@ -24,6 +24,18 @@ func SetVisualisation(x bool) {
 	UseVisualisation = x
 }
 
+// combines the functionality of GetDayDataFile and reading the lines to a string array
+func GetDayDataLines(day int) []string {
+	file := GetDayDataFile(day)
+
+	lines, err := ReadLines(file)
+	if err != nil {
+		panic(err)
+	}
+
+	return lines
+}
+
 // gets the data file for the requested day and part
 func GetDayDataFile(day int) string {
 	fn := fullDataFile
