@@ -10,6 +10,8 @@ import (
 const day = 2
 const title = "Red-Nosed Reports"
 
+var dampeners int
+
 // func renderHeatmap(data [][]int) {
 // 	var xAxis []string
 // 	for i := 0; i < len(data); i++ {
@@ -27,14 +29,22 @@ const title = "Red-Nosed Reports"
 // 	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
 // }
 
-func isReportSafe(report []int) bool {
-	pterm.DefaultBasicText.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)))
+func removeByIndex(s []int, index int) []int {
+	return append(s[:index], s[index+1:]...)
+}
+
+func isReportSafe(report []int, dampener bool) bool {
+	fmt.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)))
 	var direction string
 	prev := 0
 
+	var failState []bool
+
 	for _, current := range report {
+		fail := false
 		if prev == 0 {
 			// this is the first record - all we can do is record the value
+			failState = append(failState, false) // failState will always be false
 			prev = current
 		} else {
 			// subtract current from prev to work out the diff
@@ -42,7 +52,7 @@ func isReportSafe(report []int) bool {
 
 			// if the diff is 0, or greater than +-3 then bomb out
 			if diff == 0 || diff > 3 || diff < -3 {
-				return false
+				fail = true
 			}
 
 			// if direction hasn't been set
@@ -55,13 +65,42 @@ func isReportSafe(report []int) bool {
 			} else {
 				// else if it has been set, if the diff is opposite, reject the record
 				if (direction == "+" && diff < 0) || (direction == "-" && diff > 0) {
-					return false
+					fail = true
 				}
 			}
+
+			failState = append(failState, fail)
 
 			prev = current
 		}
 
+	}
+
+	fmt.Println("FailState:" + pterm.Red(fmt.Sprint(failState)))
+
+	// how many failures were there?
+	failCount, i, failIndex := 0, 0, 0
+	for _, value := range failState {
+		if value {
+			failCount++
+			failIndex = i
+		}
+		i++
+	}
+
+	// failure states:
+	//  - failCount is 2 or more
+	//  - dampener is false and failCount > 0
+	if failCount > 1 || (!dampener && failCount > 0) {
+		return false
+	}
+
+	if failCount == 1 {
+		// remove the failed value from the report and try again
+		fmt.Println("Iterate")
+		dampeners++
+		report = removeByIndex(report, failIndex)
+		return isReportSafe(report, false)
 	}
 
 	// if the for loops gets all the way through, the report is safe
@@ -80,7 +119,7 @@ func Part1() {
 
 	for _, s := range lines {
 		report := base.StringToIntArray(s)
-		if isReportSafe(report) {
+		if isReportSafe(report, false) {
 			count++
 		}
 	}
@@ -89,8 +128,25 @@ func Part1() {
 }
 
 func Part2() {
+	count := 0
 	pterm.DefaultHeader.Println("Day " + fmt.Sprint(day) + ", Part 2: " + title)
 
-	// Print a spacer line for better readability.
-	pterm.Println()
+	lines := base.GetDayDataLines(day)
+
+	for _, s := range lines {
+		report := base.StringToIntArray(s)
+		if isReportSafe(report, true) {
+			fmt.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)) + " SAFE")
+			// pterm.DefaultBasicText.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)) + " SAFE")
+			count++
+		} else {
+			fmt.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)) + " UNSAFE")
+		}
+
+		fmt.Println()
+	}
+
+	pterm.DefaultHeader.Println("Number of Reports: " + fmt.Sprint(len(lines)))
+	pterm.DefaultHeader.Println("Number of Dampener engagements: " + fmt.Sprint(dampeners))
+	pterm.DefaultHeader.Println("Number of " + pterm.LightMagenta("SAFE") + " Reports: " + fmt.Sprint(count))
 }
