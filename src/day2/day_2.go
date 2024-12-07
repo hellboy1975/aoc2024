@@ -10,41 +10,22 @@ import (
 const day = 2
 const title = "Red-Nosed Reports"
 
-var dampeners int
-
-// func renderHeatmap(data [][]int) {
-// 	var xAxis []string
-// 	for i := 0; i < len(data); i++ {
-// 		xAxis = append(xAxis, string(i))
-// 	}
-
-// 	// Define the labels for the X and Y axes of the heatmap.
-// 	headerData := pterm.HeatmapAxis{
-// 		XAxis: xAxis,
-// 		YAxis: []string{"1", "2", "3", "4", "5", "6", "7", "8"},
-// 	}
-
-// 	// Create a heatmap with the defined data and axis labels, and enable RGB colors.
-// 	// Then render the heatmap.
-// 	pterm.DefaultHeatmap.WithAxisData(headerData).WithData(data).WithEnableRGB().Render()
-// }
-
+// this function makes a copy of the passed array, removes a value and returns it
 func removeByIndex(s []int, index int) []int {
-	return append(s[:index], s[index+1:]...)
+
+	cpy := make([]int, len(s))
+	copy(cpy, s)
+	return append(cpy[:index], cpy[index+1:]...)
 }
 
-func isReportSafe(report []int, dampener bool) bool {
-	fmt.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)))
+// checks to see if the passed report is safe
+func isReportSafe(report []int) bool {
 	var direction string
 	prev := 0
 
-	var failState []bool
-
 	for _, current := range report {
-		fail := false
 		if prev == 0 {
 			// this is the first record - all we can do is record the value
-			failState = append(failState, false) // failState will always be false
 			prev = current
 		} else {
 			// subtract current from prev to work out the diff
@@ -52,7 +33,7 @@ func isReportSafe(report []int, dampener bool) bool {
 
 			// if the diff is 0, or greater than +-3 then bomb out
 			if diff == 0 || diff > 3 || diff < -3 {
-				fail = true
+				return false
 			}
 
 			// if direction hasn't been set
@@ -65,46 +46,29 @@ func isReportSafe(report []int, dampener bool) bool {
 			} else {
 				// else if it has been set, if the diff is opposite, reject the record
 				if (direction == "+" && diff < 0) || (direction == "-" && diff > 0) {
-					fail = true
+					return false
 				}
 			}
-
-			failState = append(failState, fail)
 
 			prev = current
 		}
 
 	}
 
-	fmt.Println("FailState:" + pterm.Red(fmt.Sprint(failState)))
-
-	// how many failures were there?
-	failCount, i, failIndex := 0, 0, 0
-	for _, value := range failState {
-		if value {
-			failCount++
-			failIndex = i
-		}
-		i++
-	}
-
-	// failure states:
-	//  - failCount is 2 or more
-	//  - dampener is false and failCount > 0
-	if failCount > 1 || (!dampener && failCount > 0) {
-		return false
-	}
-
-	if failCount == 1 {
-		// remove the failed value from the report and try again
-		fmt.Println("Iterate")
-		dampeners++
-		report = removeByIndex(report, failIndex)
-		return isReportSafe(report, false)
-	}
-
 	// if the for loops gets all the way through, the report is safe
 	return true
+}
+
+// if the dampeners are engaged, then we check reports - 1 array, returning when the first safe one is found
+func dampenerCheck(report []int) bool {
+	for i := 0; i < len(report); i++ {
+		if isReportSafe(removeByIndex(report, i)) {
+			return true
+		}
+	}
+
+	fmt.Println("Report  " + pterm.LightMagenta(fmt.Sprint(report)) + " UNSAFE")
+	return false
 }
 
 func Part1() {
@@ -119,7 +83,7 @@ func Part1() {
 
 	for _, s := range lines {
 		report := base.StringToIntArray(s)
-		if isReportSafe(report, false) {
+		if isReportSafe(report) {
 			count++
 		}
 	}
@@ -135,18 +99,15 @@ func Part2() {
 
 	for _, s := range lines {
 		report := base.StringToIntArray(s)
-		if isReportSafe(report, true) {
-			fmt.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)) + " SAFE")
-			// pterm.DefaultBasicText.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)) + " SAFE")
+		if isReportSafe(report) {
 			count++
 		} else {
-			fmt.Println("Report" + pterm.LightMagenta(fmt.Sprint(report)) + " UNSAFE")
+			if dampenerCheck(report) {
+				count++
+			}
 		}
-
-		fmt.Println()
 	}
 
 	pterm.DefaultHeader.Println("Number of Reports: " + fmt.Sprint(len(lines)))
-	pterm.DefaultHeader.Println("Number of Dampener engagements: " + fmt.Sprint(dampeners))
 	pterm.DefaultHeader.Println("Number of " + pterm.LightMagenta("SAFE") + " Reports: " + fmt.Sprint(count))
 }
