@@ -50,11 +50,7 @@ go test ./...
 
 ## Day notes
 
-### Day 1
-
-**Part 1**
-
-**Part 2**
+* Day 3 Part 2 - solutions looks good (to me) but doesn't resolve in a correct answer.  Can't work out why not :(
 
 ## References
 
