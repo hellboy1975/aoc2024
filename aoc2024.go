@@ -6,6 +6,7 @@ import (
 	"hellboy1975/aoc2024/src/base"
 	"hellboy1975/aoc2024/src/day1"
 	"hellboy1975/aoc2024/src/day2"
+	"hellboy1975/aoc2024/src/day3"
 
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
@@ -46,6 +47,12 @@ func main() {
 			day2.Part1()
 		} else {
 			day2.Part2()
+		}
+	} else if *dayPtr == 3 {
+		if *partPtr == 1 {
+			day3.Part1()
+		} else {
+			day3.Part2()
 		}
 	}
 }

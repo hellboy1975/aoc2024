@@ -36,6 +36,16 @@ func GetDayDataLines(day int) []string {
 	return lines
 }
 
+// gets the days data as a string
+func GetDayDataString(day int) string {
+	b, err := os.ReadFile(GetDayDataFile(day))
+	if err != nil {
+		fmt.Print(err)
+	}
+	// b will be a []byte, so convert to a string
+	return string(b)
+}
+
 // gets the data file for the requested day and part
 func GetDayDataFile(day int) string {
 	fn := fullDataFile
@@ -112,7 +122,12 @@ func RemoveDuplicateInt(intSlice []int) []int {
 func StringToIntArray(nums string) (arr []int) {
 	nums = strings.TrimSpace(nums)              // remove trailing and leading whitespace
 	nums = strings.ReplaceAll(nums, "   ", " ") // remove triple spaces
-	for _, num := range strings.Split(nums, " ") {
+	return StringToIntArraySplit(nums, " ")
+}
+
+// same as StringToIntArray, but instead of doing some bullshit with spaces you just pass a delimiter
+func StringToIntArraySplit(nums string, d string) (arr []int) {
+	for _, num := range strings.Split(nums, d) {
 		n, _ := strconv.Atoi(num)
 		arr = append(arr, n)
 	}
