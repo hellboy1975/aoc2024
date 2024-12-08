@@ -72,11 +72,13 @@ func calcDiagonal(col int, row int) []cell {
 	cells := []cell{}
 	off := 0
 
-	for i := row; i <= col; i++ {
-		c := cell{x: i, y: col - i}
+	for i := row; i <= col+row; i++ {
+		c := cell{x: i, y: col - i + row}
 		cells = append(cells, c)
 		off++
 	}
+
+	fmt.Println("	D test: " + pterm.LightBlue(fmt.Sprint(cells)))
 
 	return cells
 }
@@ -90,13 +92,25 @@ func calcDiagonal(col int, row int) []cell {
 // 50 51 52 53 54 55 56 57 58 59
 // 60 61 62 63 64 65 66 67 68 69
 
-func getDiagonals() int {
-	// cols := len(lines[0])
-	// rows := len(lines)
+func getDiagonalsToRight() int {
+	var cells [][]cell
+	cols := len(lines[0])
+	rows := len(lines) // I think it's a square, so rows probably = cols
 
-	cells := calcDiagonal(5, 0)
+	for i := 0; i <= cols; i++ {
+		cells = append(cells, calcDiagonal(i, 0))
+	}
 
-	fmt.Println("	D test: " + pterm.LightBlue(fmt.Sprint(cells)))
+	// I hate this method
+	for r := 0; r <= rows; r++ {
+		c := calcDiagonal(cols, r)
+		if c.x <= cols {
+			cells = append(cells, c)
+		}
+
+	}
+
+	// fmt.Println("	D test: " + pterm.LightBlue(fmt.Sprint(cells)))
 
 	return 5
 
@@ -120,7 +134,7 @@ func Part1() {
 	// then transpose and do the same for vertical
 	xmasCount += getVertical()
 
-	xmasCount += getDiagonals()
+	xmasCount += getDiagonalsToRight()
 
 	fmt.Println("Xmas count: " + pterm.Yellow(fmt.Sprint(xmasCount)))
 }
