@@ -7,6 +7,7 @@ import (
 	"hellboy1975/aoc2024/src/day1"
 	"hellboy1975/aoc2024/src/day2"
 	"hellboy1975/aoc2024/src/day3"
+	"hellboy1975/aoc2024/src/day4"
 
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
@@ -26,7 +27,7 @@ func main() {
 	flag.Parse()
 
 	if *testPtr {
-		fmt.Println("  Test mode ON")
+		fmt.Println("  Test mode " + pterm.Green("ON"))
 		base.SetTestData(true)
 	}
 
@@ -53,6 +54,12 @@ func main() {
 			day3.Part1()
 		} else {
 			day3.Part2()
+		}
+	} else if *dayPtr == 4 {
+		if *partPtr == 1 {
+			day4.Part1()
+		} else {
+			day4.Part2()
 		}
 	}
 }

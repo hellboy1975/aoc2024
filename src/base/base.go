@@ -133,3 +133,62 @@ func StringToIntArraySplit(nums string, d string) (arr []int) {
 	}
 	return arr
 }
+
+func ReadFileTo2DByteArray(filePath string) ([][]byte, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	var lines [][]byte
+	for scanner.Scan() {
+		lines = append(lines, scanner.Bytes())
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return lines, nil
+}
+
+// script for transposing slice from (n x m) to (m x n) for golang.  From Gemini
+func Transpose(slice [][]string) [][]string {
+	xl := len(slice[0])
+	yl := len(slice)
+	result := make([][]string, xl)
+	for i := range result {
+		result[i] = make([]string, yl)
+	}
+	for i := 0; i < xl; i++ {
+		for j := 0; j < yl; j++ {
+			result[i][j] = slice[j][i]
+		}
+	}
+	return result
+}
+
+// transposes a byte array.  Credit:  https://stackoverflow.com/questions/63257822/fast-transpose-byte-matrix-byte-in-golang-assembly
+func TransposeByte(M [][]byte) [][]byte {
+	m := len(M)
+	n := len(M[0])
+
+	// transposed matrix
+	T := make([][]byte, n)
+	for i := 0; i < n; i++ {
+		T[i] = make([]byte, m)
+	}
+
+	var row []byte // a row in T
+	for i := 0; i < n; i++ {
+		row = T[i]
+		for j := 0; j < m; j++ {
+			row[j] = M[j][i]
+		}
+	}
+
+	return T
+}
