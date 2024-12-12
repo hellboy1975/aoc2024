@@ -192,3 +192,91 @@ func TransposeByte(M [][]byte) [][]byte {
 
 	return T
 }
+
+// takes a 2D array, and rotates it 45 degrees
+// for example, it will take a square, and make it a diamond
+// 1 2 3
+// 1 2 3
+// 1 2 3
+//
+// to
+//
+//	 1
+//	1 2
+//
+// 1 2 3
+//
+//	2 3
+//	 3
+func Rotate45Degrees(matrix [][]byte) [][]byte {
+	n := len(matrix)
+	newSize := 2*n - 1
+	rotated := make([][]byte, newSize)
+	for i := range rotated {
+		rotated[i] = make([]byte, newSize)
+	}
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			newI := i + j
+			newJ := j - i + n - 1
+			rotated[newI][newJ] = matrix[i][j]
+		}
+	}
+
+	return rotated
+}
+
+func Rotate90Degrees(matrix [][]byte) [][]byte {
+	n := len(matrix)
+	rotated := make([][]byte, n)
+	for i := range rotated {
+		rotated[i] = make([]byte, n)
+	}
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			rotated[j][n-1-i] = matrix[i][j]
+		}
+	}
+
+	return rotated
+}
+
+func Rotate45CounterClockwise(matrix [][]byte) [][]byte {
+	n := len(matrix)
+	newSize := 2*n - 1
+	rotated := make([][]byte, newSize)
+	for i := range rotated {
+		rotated[i] = make([]byte, newSize)
+	}
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			newI := i + j
+			newJ := n - 1 - (i - j)
+			rotated[newI][newJ] = matrix[i][j]
+		}
+	}
+
+	return rotated
+}
+
+func RemoveZeros(arr []byte) []byte {
+	// Initialize a counter to track non-zero elements
+	count := 0
+
+	// Iterate over the array, shifting non-zero elements to the beginning
+	for i := 0; i < len(arr); i++ {
+		if arr[i] != 0 {
+			arr[count] = arr[i]
+			count++
+		}
+	}
+
+	// Create a new slice with the correct length (number of non-zero elements)
+	result := make([]byte, count)
+	copy(result, arr[:count])
+
+	return result
+}

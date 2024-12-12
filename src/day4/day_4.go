@@ -8,18 +8,25 @@ import (
 	"github.com/pterm/pterm"
 )
 
-type cell struct {
-	x int
-	y int
-}
-
 const day = 4
 const title = "Ceres Search"
 
 const xforward = "XMAS"
 const xbackward = "SAMX"
 
+var dirs = [][]int{
+	{-1, -1},
+	{0, -1},
+	{1, -1},
+	{-1, 0},
+	{1, 0},
+	{-1, 1},
+	{0, 1},
+	{1, 1},
+}
+
 var lines [][]byte
+var area pterm.AreaPrinter
 
 // determines how many instance of the backwards for forwards string occur in the line
 func countInLine(line string) int {
@@ -31,7 +38,7 @@ func countInLines(lines *[][]byte) int {
 	row, count := 0, 0
 	for _, line := range *lines {
 		l := string(line)
-		fmt.Println("	" + fmt.Sprint(row) + ": " + pterm.Magenta(l))
+		fmt.Println("	" + fmt.Sprint(row) + ": " + pterm.Magenta(l) + " | " + fmt.Sprint(countInLine(string(l))))
 		count += countInLine(l)
 		row++
 	}
@@ -42,45 +49,18 @@ func countInLines(lines *[][]byte) int {
 func getHorizontal() int {
 	count := countInLines(&lines)
 
-	fmt.Println("	H count: " + pterm.Green(fmt.Sprint(count)))
+	fmt.Println("H count: " + pterm.Green(fmt.Sprint(count)))
 	return count
 }
 
 // process the lines array by vertical lines
 func getVertical() int {
 	// transpose to flip the array on it's side, and then process like a horizontal array
-	lines = base.TransposeByte(lines)
+	lines = base.Rotate90Degrees(lines)
 	count := countInLines(&lines)
 
-	fmt.Println("	V count: " + pterm.Green(fmt.Sprint(count)))
+	fmt.Println("V count: " + pterm.Green(fmt.Sprint(count)))
 	return count
-}
-
-// func getStringFromCell(cells []cell) string {
-// 	for _, c := range cells {
-// 	}
-// }
-
-func calcDiagonal(col int, row int) []cell {
-
-	if col == 0 && row == 0 {
-		var r []cell
-		r = append(r, cell{x: 0, y: 0})
-		return r
-	}
-
-	cells := []cell{}
-	off := 0
-
-	for i := row; i <= col+row; i++ {
-		c := cell{x: i, y: col - i + row}
-		cells = append(cells, c)
-		off++
-	}
-
-	fmt.Println("	D test: " + pterm.LightBlue(fmt.Sprint(cells)))
-
-	return cells
 }
 
 // a diagram used for plotting and scheming
@@ -92,28 +72,122 @@ func calcDiagonal(col int, row int) []cell {
 // 50 51 52 53 54 55 56 57 58 59
 // 60 61 62 63 64 65 66 67 68 69
 
-func getDiagonalsToRight() int {
-	var cells [][]cell
-	cols := len(lines[0])
-	rows := len(lines) // I think it's a square, so rows probably = cols
+func getDiagonalsRotated() int {
+	r := base.Rotate45Degrees(lines)
+	row, total := 0, 0
 
-	for i := 0; i <= cols; i++ {
-		cells = append(cells, calcDiagonal(i, 0))
+	for _, line := range r {
+		line = base.RemoveZeros(line)
+		c := countInLine(string(line))
+		fmt.Println("	" + fmt.Sprint(row) + ": " + pterm.Magenta(string(line)) + " | " + fmt.Sprint(c))
+		total += c
+		row++
 	}
 
-	// I hate this method
-	for r := 0; r <= rows; r++ {
-		c := calcDiagonal(cols, r)
-		if c.x <= cols {
-			cells = append(cells, c)
+	fmt.Println("R total: " + pterm.LightBlue(fmt.Sprint(total)))
+
+	return total
+}
+
+func getDiagonalsRotatedL() int {
+	lines := base.TransposeByte(lines)
+	r := base.Rotate45CounterClockwise(lines)
+
+	row, total := 0, 0
+
+	for _, line := range r {
+		line = base.RemoveZeros(line)
+		c := countInLine(string(line))
+		fmt.Println("	" + fmt.Sprint(row) + ": " + pterm.Magenta(string(line)) + " | " + fmt.Sprint(c))
+		total += c
+		row++
+	}
+
+	fmt.Println("R total: " + pterm.LightBlue(fmt.Sprint(total)))
+
+	return total
+}
+
+// func checkDir(x, y, xDir, yDir int) bool {
+
+// }
+
+func checkWordFromCell(x, y int) bool {
+	r := []int{-1, 0, 1}
+
+	for _, yDir := range r {
+		for _, xDir := range r {
+
 		}
+	}
+	return false
+}
 
+// prints the martix that we're iterating through.  Makes X's red B)
+func printMatrix() string {
+	var output string
+
+	for _, l := range lines {
+		for _, c := range l {
+			if string(c) == "X" {
+				output += pterm.Red(string(c))
+			} else {
+				output += pterm.LightBlue(string(c))
+			}
+
+		}
+		output += "\n"
 	}
 
-	// fmt.Println("	D test: " + pterm.LightBlue(fmt.Sprint(cells)))
+	return output
+}
 
-	return 5
+// scans the 8 cardinal directions from the passed reference to check if it spells XMAS
+func scanDirs(x, y int) int {
+	word := "X" // we've already found X, so we can seed the word check variable
+	count := 0
+	for _, dir := range dirs {
+		for i := 0; i < 3; i++ {
+			// if the cell to be checked is outside of the bounds of the lines array, skip over this loop
+			xDir := x + dir[0]
+			yDir := y + dir[1]
+			if (xDir < 0) || (xDir > len(lines)) ||
+				(yDir < 0) || (yDir > len(lines)) {
+				continue
+			}
+			check := string(lines[xDir][yDir])
+			if 1 == 0 && check != "M" {
+				break
+			} else if 1 == 1 && check != "A" {
+				break
+			} else if i == 2 && check != "S" {
+				break
+			}
+			word += check
+		}
+		if word == "XMAS" {
+			count++
+		}
+	}
+	return count
+}
 
+// scans the matrix for the occurance of a cell with the value X
+func scanForX() int {
+	x, y, count := 0, 0, 0
+
+	for _, l := range lines {
+		for _, cell := range l {
+			if string(cell) == "X" {
+				count += scanDirs(x, y)
+
+			}
+			x++
+		}
+		y++
+		x = 0
+	}
+	return count
 }
 
 func Part1() {
@@ -123,18 +197,38 @@ func Part1() {
 
 	lines, err = base.ReadFileTo2DByteArray(base.GetDayDataFile(day))
 
+	fmt.Println("Matrix columns: " + pterm.LightBlue(len(lines[0])))
+	fmt.Println("Matrix rows: " + pterm.LightBlue(len(lines)))
+
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
+	// Print two new lines as spacer.
+	pterm.Print("\n\n")
+
+	// Start the Area printer from PTerm's DefaultArea, with the Center option.
+	// The Area printer allows us to update a specific area of the console output.
+	// The returned 'area' object is used to control the area updates.
+	area, _ := pterm.DefaultArea.WithCenter().Start()
+
+	// Update the Area contents with the current time string.
+	area.Update(printMatrix())
+
+	area.Stop()
+
+	xmasCount = scanForX()
+
 	// step 1 - find instances of `XMAS` and `SAMX` in the horizontal rows
-	xmasCount += getHorizontal()
+	// xmasCount += getHorizontal()
 
-	// then transpose and do the same for vertical
-	xmasCount += getVertical()
+	// xmasCount += getDiagonalsRotated()
 
-	xmasCount += getDiagonalsToRight()
+	// // then transpose and do the same for vertical
+	// xmasCount += getVertical()
+
+	// xmasCount += getDiagonalsRotatedL()
 
 	fmt.Println("Xmas count: " + pterm.Yellow(fmt.Sprint(xmasCount)))
 }
