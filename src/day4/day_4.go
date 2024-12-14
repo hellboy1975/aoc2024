@@ -3,6 +3,7 @@ package day4
 import (
 	"fmt"
 	"hellboy1975/aoc2024/src/base"
+	"slice"
 	"strings"
 
 	"github.com/pterm/pterm"
@@ -24,6 +25,10 @@ var dirs = [][]int{
 	{0, 1},
 	{1, 1},
 }
+
+var green [][]int
+var magenta [][]int
+var yellow [][]int
 
 var lines [][]byte
 var area pterm.AreaPrinter
@@ -117,7 +122,7 @@ func checkWordFromCell(x, y int) bool {
 
 	for _, yDir := range r {
 		for _, xDir := range r {
-
+			fmt.Println(string(xDir) + ", " + string(yDir))
 		}
 	}
 	return false
@@ -126,16 +131,20 @@ func checkWordFromCell(x, y int) bool {
 // prints the martix that we're iterating through.  Makes X's red B)
 func printMatrix() string {
 	var output string
+	x, y := 0, 0
 
 	for _, l := range lines {
 		for _, c := range l {
 			if string(c) == "X" {
 				output += pterm.Red(string(c))
+			} else if slice.Index(green, []int{x, y}) {
+				output += pterm.Green(string(c))
 			} else {
 				output += pterm.LightBlue(string(c))
 			}
-
+			x++
 		}
+		y++
 		output += "\n"
 	}
 
@@ -144,28 +153,43 @@ func printMatrix() string {
 
 // scans the 8 cardinal directions from the passed reference to check if it spells XMAS
 func scanDirs(x, y int) int {
-	word := "X" // we've already found X, so we can seed the word check variable
-	count := 0
+	count, it := 0, -1
+
+	primary := pterm.NewStyle(pterm.FgLightCyan, pterm.BgGray, pterm.Bold)
+	primary.Printfln("Root: %d, %d", x, y)
+
 	for _, dir := range dirs {
+		// reset variables
+		xDir := x
+		yDir := y
+		word := "X" // we've already found X, so we can seed the word check variable
+
+		fmt.Println("dir	" + fmt.Sprint(dir))
 		for i := 0; i < 3; i++ {
 			// if the cell to be checked is outside of the bounds of the lines array, skip over this loop
-			xDir := x + dir[0]
-			yDir := y + dir[1]
-			if (xDir < 0) || (xDir > len(lines)) ||
-				(yDir < 0) || (yDir > len(lines)) {
+			xDir += dir[0]
+			yDir += dir[1]
+			it++
+			if (xDir < 0) || (xDir >= len(lines)) ||
+				(yDir < 0) || (yDir >= len(lines)) {
 				continue
 			}
-			check := string(lines[xDir][yDir])
-			if 1 == 0 && check != "M" {
+			check := string(lines[yDir][xDir])
+			fmt.Println("	" + fmt.Sprint(it) + " [" + fmt.Sprintf("%d, %d", yDir, xDir) + "] " + ": " + pterm.Magenta(string(lines[yDir][xDir])))
+			if i == 0 && check != "M" {
 				break
-			} else if 1 == 1 && check != "A" {
+			} else if i == 1 && check != "A" {
 				break
 			} else if i == 2 && check != "S" {
 				break
 			}
 			word += check
+			fmt.Println("	" + pterm.Red(word))
+
 		}
+		// once the loop breaks, see if it makes XMAS
 		if word == "XMAS" {
+			fmt.Println("	" + pterm.Green("XMAS!!"))
 			count++
 		}
 	}
@@ -174,6 +198,9 @@ func scanDirs(x, y int) int {
 
 // scans the matrix for the occurance of a cell with the value X
 func scanForX() int {
+	//test 5, 5
+	// count := scanDirs(4, 1)
+
 	x, y, count := 0, 0, 0
 
 	for _, l := range lines {
@@ -219,16 +246,6 @@ func Part1() {
 	area.Stop()
 
 	xmasCount = scanForX()
-
-	// step 1 - find instances of `XMAS` and `SAMX` in the horizontal rows
-	// xmasCount += getHorizontal()
-
-	// xmasCount += getDiagonalsRotated()
-
-	// // then transpose and do the same for vertical
-	// xmasCount += getVertical()
-
-	// xmasCount += getDiagonalsRotatedL()
 
 	fmt.Println("Xmas count: " + pterm.Yellow(fmt.Sprint(xmasCount)))
 }
