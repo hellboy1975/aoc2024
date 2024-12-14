@@ -61,5 +61,11 @@ func main() {
 		} else {
 			day4.Part2()
 		}
+	} else if *dayPtr == 5 {
+		if *partPtr == 1 {
+			day5.Part1()
+		} else {
+			day5.Part2()
+		}
 	}
 }
